@@ -1,0 +1,100 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}CardVault Pro{% endblock %}</title>
+
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+
+<body>
+
+    <nav class="navbar">
+
+        <div class="brand">
+            CardVault Pro
+        </div>
+
+        {% if user.is_authenticated %}
+
+        <div class="nav-links">
+
+            <a href="{% url 'card_list' %}">
+                My Cards
+            </a>
+
+            <a href="{% url 'make_payment' %}">
+                Make Payment
+            </a>
+
+            <a href="{% url 'transaction_history' %}">
+                Transactions
+            </a>
+
+            <span style="color: var(--text-main); font-weight: 600;">
+                {{ user.username }}
+            </span>
+
+            <form
+                action="{% url 'logout' %}"
+                method="post"
+                style="display: inline;"
+            >
+                {% csrf_token %}
+
+                <button type="submit">
+                    Logout
+                </button>
+            </form>
+
+        </div>
+
+        {% else %}
+
+        <div class="nav-links">
+
+            <a href="{% url 'login' %}">
+                Login
+            </a>
+
+            <a
+                href="{% url 'register' %}"
+                class="btn"
+                style="
+                    margin-left: 1.5rem;
+                    padding: 0.5rem 1.25rem;
+                    box-shadow: none;
+                "
+            >
+                Sign Up
+            </a>
+
+        </div>
+
+        {% endif %}
+
+    </nav>
+
+    <main class="container">
+
+        {% if messages %}
+
+            {% for message in messages %}
+
+                <div class="messages">
+                    {{ message }}
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+
+        {% block content %}{% endblock %}
+
+    </main>
+
+</body>
+</html>

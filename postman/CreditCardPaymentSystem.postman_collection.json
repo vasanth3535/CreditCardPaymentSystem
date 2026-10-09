@@ -1,0 +1,273 @@
+{
+  "info": {
+    "_postman_id": "credit-card-payment-system",
+    "name": "Credit Card Payment System",
+    "description": "Postman collection for Django JWT, FastAPI payment processing, and transaction management.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "django_base_url",
+      "value": "http://127.0.0.1:8000"
+    },
+    {
+      "key": "fastapi_base_url",
+      "value": "http://127.0.0.1:8001"
+    },
+    {
+      "key": "access_token",
+      "value": ""
+    },
+    {
+      "key": "transaction_id",
+      "value": "1"
+    },
+    {
+      "key": "card_id",
+      "value": "1"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "JWT Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"Vasanth123\",\n  \"password\": \"YOUR_PASSWORD\"\n}"
+            },
+            "url": {
+              "raw": "{{django_base_url}}/auth/api/token/",
+              "host": [
+                "{{django_base_url}}"
+              ],
+              "path": [
+                "auth",
+                "api",
+                "token"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Payment Processing",
+      "item": [
+        {
+          "name": "Successful Payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"card_id\": {{card_id}},\n  \"amount\": 600.00,\n  \"simulate_failure\": false\n}"
+            },
+            "url": {
+              "raw": "{{fastapi_base_url}}/payments",
+              "host": [
+                "{{fastapi_base_url}}"
+              ],
+              "path": [
+                "payments"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Failed Payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"card_id\": {{card_id}},\n  \"amount\": 600.00,\n  \"simulate_failure\": true\n}"
+            },
+            "url": {
+              "raw": "{{fastapi_base_url}}/payments",
+              "host": [
+                "{{fastapi_base_url}}"
+              ],
+              "path": [
+                "payments"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Invalid Card",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"card_id\": 99999,\n  \"amount\": 600.00,\n  \"simulate_failure\": false\n}"
+            },
+            "url": {
+              "raw": "{{fastapi_base_url}}/payments",
+              "host": [
+                "{{fastapi_base_url}}"
+              ],
+              "path": [
+                "payments"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Transaction Management",
+      "item": [
+        {
+          "name": "Transaction History",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{django_base_url}}/transactions/",
+              "host": [
+                "{{django_base_url}}"
+              ],
+              "path": [
+                "transactions"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Transaction Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{django_base_url}}/transactions/{{transaction_id}}/",
+              "host": [
+                "{{django_base_url}}"
+              ],
+              "path": [
+                "transactions",
+                "{{transaction_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Filter by Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{django_base_url}}/transactions/?status=SUCCESS",
+              "host": [
+                "{{django_base_url}}"
+              ],
+              "path": [
+                "transactions"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "SUCCESS"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Filter by Amount",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{django_base_url}}/transactions/?amount=600.00",
+              "host": [
+                "{{django_base_url}}"
+              ],
+              "path": [
+                "transactions"
+              ],
+              "query": [
+                {
+                  "key": "amount",
+                  "value": "600.00"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Filter by Date",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{django_base_url}}/transactions/?created_at=2026-10-08",
+              "host": [
+                "{{django_base_url}}"
+              ],
+              "path": [
+                "transactions"
+              ],
+              "query": [
+                {
+                  "key": "created_at",
+                  "value": "2026-10-08"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

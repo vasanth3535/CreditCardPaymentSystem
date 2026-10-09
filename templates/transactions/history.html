@@ -1,0 +1,273 @@
+{% extends 'base.html' %}
+
+{% block title %}Transactions | CardVault Pro{% endblock %}
+
+{% block content %}
+
+<div style="margin-bottom: 2rem;">
+    <p class="cc-label">PAYMENT ACTIVITY</p>
+
+    <h2 style="margin-bottom: 0.5rem;">
+        Transaction History
+    </h2>
+
+    <p style="color: var(--text-muted); margin: 0;">
+        View and filter your payment activity.
+    </p>
+</div>
+
+<div class="card-panel" style="margin-bottom: 1.5rem;">
+
+    <form method="GET">
+
+        <div style="
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        ">
+
+            <div class="form-group" style="margin: 0;">
+                <label>Status</label>
+
+                <select name="status">
+
+                    <option value="">
+                        All Statuses
+                    </option>
+
+                    <option
+                        value="SUCCESS"
+                        {% if selected_status == 'SUCCESS' %}selected{% endif %}
+                    >
+                        Success
+                    </option>
+
+                    <option
+                        value="FAILED"
+                        {% if selected_status == 'FAILED' %}selected{% endif %}
+                    >
+                        Failed
+                    </option>
+
+                    <option
+                        value="PENDING"
+                        {% if selected_status == 'PENDING' %}selected{% endif %}
+                    >
+                        Pending
+                    </option>
+
+                </select>
+            </div>
+
+            <div class="form-group" style="margin: 0;">
+
+                <label>Amount</label>
+
+                <input
+                    type="number"
+                    name="amount"
+                    min="0.01"
+                    step="0.01"
+                    value="{{ selected_amount|default:'' }}"
+                    placeholder="Enter amount"
+                >
+
+            </div>
+
+            <div class="form-group" style="margin: 0;">
+
+                <label>Date</label>
+
+                <input
+                    type="date"
+                    name="date"
+                    value="{{ selected_date|default:'' }}"
+                >
+
+            </div>
+
+        </div>
+
+        <div style="
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.25rem;
+        ">
+
+            <button type="submit" class="btn">
+                Apply Filters
+            </button>
+
+            <a
+                href="{% url 'transaction_history' %}"
+                class="btn btn-secondary"
+            >
+                Clear Filters
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% if transactions %}
+
+<div style="display: grid; gap: 1rem;">
+
+    {% for transaction in transactions %}
+
+    <div class="card-panel" style="padding: 1.5rem; margin: 0;">
+
+        <div style="
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+        ">
+
+            <div>
+
+                <div class="cc-label">
+                    TRANSACTION REFERENCE
+                </div>
+
+                <strong>
+                    {{ transaction.transaction_reference }}
+                </strong>
+
+            </div>
+
+            {% if transaction.status == 'SUCCESS' %}
+
+            <span style="
+                padding: 0.4rem 0.8rem;
+                border-radius: 999px;
+                background: rgba(34, 197, 94, 0.15);
+                color: #4ade80;
+                font-size: 0.85rem;
+                font-weight: 600;
+            ">
+                SUCCESS
+            </span>
+
+            {% elif transaction.status == 'FAILED' %}
+
+            <span style="
+                padding: 0.4rem 0.8rem;
+                border-radius: 999px;
+                background: rgba(239, 68, 68, 0.15);
+                color: #f87171;
+                font-size: 0.85rem;
+                font-weight: 600;
+            ">
+                FAILED
+            </span>
+
+            {% else %}
+
+            <span style="
+                padding: 0.4rem 0.8rem;
+                border-radius: 999px;
+                background: rgba(234, 179, 8, 0.15);
+                color: #facc15;
+                font-size: 0.85rem;
+                font-weight: 600;
+            ">
+                PENDING
+            </span>
+
+            {% endif %}
+
+        </div>
+
+        <div style="
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        ">
+
+            <div>
+
+                <div class="cc-label">
+                    CARD
+                </div>
+
+                <div>
+                    •••• {{ transaction.card.last_four_digits }}
+                </div>
+
+            </div>
+
+            <div>
+
+                <div class="cc-label">
+                    AMOUNT
+                </div>
+
+                <div style="
+                    font-size: 1.1rem;
+                    font-weight: 600;
+                ">
+                    ₹{{ transaction.amount }}
+                </div>
+
+            </div>
+
+            <div>
+
+                <div class="cc-label">
+                    DATE
+                </div>
+
+                <div>
+                    {{ transaction.created_at|date:"d M Y, h:i A" }}
+                </div>
+
+            </div>
+
+        </div>
+
+        <div style="margin-top: 1.5rem;">
+
+            <a
+                href="{% url 'transaction_detail_ui' transaction.id %}"
+                class="btn btn-secondary"
+            >
+                View Details
+            </a>
+
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+{% else %}
+
+<div class="card-panel" style="text-align: center;">
+
+    <h3>No Transactions Found</h3>
+
+    <p style="
+        color: var(--text-muted);
+        margin: 1rem 0 1.5rem;
+    ">
+        No transactions match the selected filters.
+    </p>
+
+    <a
+        href="{% url 'transaction_history' %}"
+        class="btn btn-secondary"
+    >
+        Clear Filters
+    </a>
+
+</div>
+
+{% endif %}
+
+{% endblock %}

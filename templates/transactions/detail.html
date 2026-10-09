@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+
+{% block title %}Transaction Details | CardVault Pro{% endblock %}
+
+{% block content %}
+
+<div style="max-width: 700px; margin: 0 auto;">
+
+    <div style="margin-bottom: 2rem;">
+        <p class="cc-label">TRANSACTION DETAILS</p>
+
+        <h2 style="margin-bottom: 0.5rem;">
+            Payment Details
+        </h2>
+
+        <p style="color: var(--text-muted); margin: 0;">
+            View the complete details of your payment.
+        </p>
+    </div>
+
+    <div class="card-panel">
+
+        <div style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        ">
+
+            <div>
+                <div class="cc-label">
+                    TRANSACTION REFERENCE
+                </div>
+
+                <strong>
+                    {{ transaction.transaction_reference }}
+                </strong>
+            </div>
+
+            {% if transaction.status == 'SUCCESS' %}
+
+            <span style="
+                padding: 0.4rem 0.8rem;
+                border-radius: 999px;
+                background: rgba(34, 197, 94, 0.15);
+                color: #4ade80;
+                font-weight: 600;
+            ">
+                SUCCESS
+            </span>
+
+            {% elif transaction.status == 'FAILED' %}
+
+            <span style="
+                padding: 0.4rem 0.8rem;
+                border-radius: 999px;
+                background: rgba(239, 68, 68, 0.15);
+                color: #f87171;
+                font-weight: 600;
+            ">
+                FAILED
+            </span>
+
+            {% else %}
+
+            <span style="
+                padding: 0.4rem 0.8rem;
+                border-radius: 999px;
+                background: rgba(234, 179, 8, 0.15);
+                color: #facc15;
+                font-weight: 600;
+            ">
+                PENDING
+            </span>
+
+            {% endif %}
+
+        </div>
+
+        <div style="
+            display: grid;
+            gap: 1.25rem;
+        ">
+
+            <div>
+                <div class="cc-label">CARD</div>
+                <div>
+                    •••• {{ transaction.card.last_four_digits }}
+                </div>
+            </div>
+
+            <div>
+                <div class="cc-label">CARD TYPE</div>
+                <div>
+                    {{ transaction.card.get_card_type_display }}
+                </div>
+            </div>
+
+            <div>
+                <div class="cc-label">CARD HOLDER</div>
+                <div>
+                    {{ transaction.card.card_holder_name }}
+                </div>
+            </div>
+
+            <div>
+                <div class="cc-label">AMOUNT</div>
+                <div style="
+                    font-size: 1.3rem;
+                    font-weight: 600;
+                ">
+                    ₹{{ transaction.amount }}
+                </div>
+            </div>
+
+            <div>
+                <div class="cc-label">PAYMENT STATUS</div>
+                <div>
+                    {{ transaction.get_status_display }}
+                </div>
+            </div>
+
+            <div>
+                <div class="cc-label">DATE & TIME</div>
+                <div>
+                    {{ transaction.created_at|date:"d M Y, h:i A" }}
+                </div>
+            </div>
+
+        </div>
+
+        <div style="
+            margin-top: 2rem;
+            display: flex;
+            gap: 1rem;
+        ">
+
+            <a
+                href="{% url 'transaction_history' %}"
+                class="btn btn-secondary"
+            >
+                Back to Transactions
+            </a>
+
+            <a
+                href="{% url 'make_payment' %}"
+                class="btn"
+            >
+                Make Payment
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

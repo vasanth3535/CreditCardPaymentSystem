@@ -1,0 +1,42 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+<h1>Daily Payment Summary</h1>
+
+<p>Date: {{ report_date }}</p>
+
+<div class="module">
+    <table>
+        <tr>
+            <th>Total Transactions</th>
+            <td>{{ total_transactions }}</td>
+        </tr>
+        <tr>
+            <th>Successful Payments</th>
+            <td>{{ successful_payments }}</td>
+        </tr>
+        <tr>
+            <th>Failed Payments</th>
+            <td>{{ failed_payments }}</td>
+        </tr>
+        <tr>
+            <th>Pending Payments</th>
+            <td>{{ pending_payments }}</td>
+        </tr>
+        <tr>
+            <th>Total Payment Amount</th>
+            <td>{{ total_amount }}</td>
+        </tr>
+    </table>
+</div>
+
+<p>
+    <a href="{% url 'admin_transaction_csv' %}" class="button">
+        Export Transactions CSV
+    </a>
+</p>
+
+<p>
+    <a href="{% url 'admin:index' %}">Back to Admin</a>
+</p>
+{% endblock %}

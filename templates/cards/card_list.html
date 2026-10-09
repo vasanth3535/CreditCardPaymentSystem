@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+{% block title %}My Cards | CardVault Pro{% endblock %}
+
+{% block content %}
+
+<div style="margin-bottom: 2rem;">
+    <h2 style="margin-bottom: 0.5rem;">My Cards</h2>
+
+    <p style="color: var(--text-muted); margin: 0;">
+        Manage your saved payment cards securely.
+    </p>
+</div>
+
+<div class="security-notice">
+    <span style="font-size: 1.5rem;">✓</span>
+
+    <div>
+        <strong>Secure Card Storage</strong>
+
+        <div>
+            Only masked card information and the last four digits are stored.
+            CVV and full card numbers are never stored.
+        </div>
+    </div>
+</div>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+
+    <h3 style="margin: 0;">Saved Cards</h3>
+
+    <a href="{% url 'add_card' %}" class="btn">
+        + Add Card
+    </a>
+
+</div>
+
+{% if cards %}
+
+<div class="cc-grid">
+
+    {% for card in cards %}
+
+    <div class="cc-card">
+
+        <div class="cc-top">
+
+            <div>
+                <div class="cc-label">CARD TYPE</div>
+
+                <div style="font-size: 1rem; font-weight: 600;">
+                    {{ card.get_card_type_display }}
+                </div>
+            </div>
+
+            <div class="cc-chip"></div>
+
+        </div>
+
+        <div class="cc-number">
+            •••• •••• •••• {{ card.last_four_digits }}
+        </div>
+
+        <div class="cc-bottom">
+
+            <div>
+                <div class="cc-label">CARD HOLDER</div>
+
+                <div class="cc-holder">
+                    {{ card.card_holder_name }}
+                </div>
+            </div>
+
+            <div>
+                <div class="cc-label">EXPIRES</div>
+
+                <div class="cc-exp">
+                    {{ card.expiry_date }}
+                </div>
+            </div>
+
+        </div>
+
+        <div class="cc-actions">
+
+            <a href="{% url 'edit_card' card.id %}" class="btn btn-secondary">
+                Edit
+            </a>
+
+            <a href="{% url 'delete_card' card.id %}" class="btn btn-danger">
+                Delete
+            </a>
+
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+{% else %}
+
+<div class="card-panel" style="max-width: 100%; text-align: center;">
+
+    <h3>No Saved Cards</h3>
+
+    <p style="color: var(--text-muted); margin: 1rem 0 1.5rem;">
+        Add your first credit or debit card to get started.
+    </p>
+
+    <a href="{% url 'add_card' %}" class="btn">
+        + Add Card
+    </a>
+
+</div>
+
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,101 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+<div id="content-main">
+    <h1>Admin Activity Logs</h1>
+    <p>Review administrative actions recorded by the payment system.</p>
+
+    <div class="module">
+        <form method="get" style="padding: 16px;">
+            <label for="activity-search"><strong>Search activity</strong></label>
+            <input
+                id="activity-search"
+                type="search"
+                name="q"
+                value="{{ search_query }}"
+                placeholder="Username or action"
+                style="margin: 0 8px; max-width: 320px;"
+            >
+            <button type="submit" class="button">Search</button>
+            {% if search_query %}
+                <a href="{% url 'admin_activity_logs' %}" style="margin-left: 8px;">
+                    Clear
+                </a>
+            {% endif %}
+        </form>
+
+        <p style="padding: 0 16px;">
+            <strong>{{ total_logs }}</strong> activity record{{ total_logs|pluralize }}
+        </p>
+
+        <div style="overflow-x: auto;">
+            <table style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th scope="col">Administrator</th>
+                        <th scope="col">Action</th>
+                        <th scope="col">Details</th>
+                        <th scope="col">Date and time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in page_obj %}
+                    <tr>
+                        <td>{{ log.user.username|default:"Deleted user" }}</td>
+                        <td>
+                            {% if log.action_flag == 1 %}
+                                Added
+                            {% elif log.action_flag == 2 %}
+                                Activity
+                            {% elif log.action_flag == 3 %}
+                                Deleted
+                            {% else %}
+                                Recorded
+                            {% endif %}
+                        </td>
+                        <td>
+                            <strong>{{ log.object_repr }}</strong>
+                            {% if log.change_message %}
+                                <div>{{ log.change_message }}</div>
+                            {% endif %}
+                            {% if log.content_type %}
+                                <small>{{ log.content_type }}</small>
+                            {% endif %}
+                        </td>
+                        <td>{{ log.action_time|date:"d M Y, H:i:s" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4">No activity records found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {% if page_obj.has_other_pages %}
+    <div class="pagination" style="margin-top: 16px;">
+        {% if page_obj.has_previous %}
+            <a href="?q={{ search_query|urlencode }}&page={{ page_obj.previous_page_number }}">
+                Previous
+            </a>
+        {% endif %}
+
+        <span style="padding: 0 12px;">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?q={{ search_query|urlencode }}&page={{ page_obj.next_page_number }}">
+                Next
+            </a>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <p style="margin-top: 20px;">
+        <a href="{% url 'admin:index' %}" class="button">Back to Admin</a>
+    </p>
+</div>
+{% endblock %}
