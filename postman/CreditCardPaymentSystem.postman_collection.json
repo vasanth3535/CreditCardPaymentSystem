@@ -56,7 +56,23 @@
                 "token"
               ]
             }
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Login succeeds and access token is saved', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.access).to.be.a('string').and.not.empty;",
+                  "  pm.collectionVariables.set('access_token', body.access);",
+                  "});"
+                ]
+              }
+            }
+          ]
         }
       ]
     },
@@ -85,6 +101,16 @@
               "path": [
                 "payments"
               ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
             }
           }
         },
@@ -110,6 +136,16 @@
               "path": [
                 "payments"
               ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
             }
           }
         },
@@ -134,6 +170,16 @@
               ],
               "path": [
                 "payments"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
               ]
             }
           }

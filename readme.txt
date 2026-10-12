@@ -110,3 +110,39 @@ The recorded Django test run passed 10 tests with 76% Django coverage. The FastA
 
 ## Git
 The project repository is initialized locally. Review `git status` and commit the verified source files with a meaningful commit message.
+
+## Database Schema
+
+The application uses MySQL for persistent storage.
+
+Main tables:
+
+- auth_user: stores user accounts and Django-hashed passwords.
+- cards_card: stores the card owner, cardholder name, card type,
+  masked card number, last four digits, and expiry date.
+- transactions_app_transaction: stores the user, saved card, amount,
+  transaction status, unique transaction reference, and creation time.
+
+Relationships:
+
+- One user can own multiple saved cards.
+- One user can have multiple transactions.
+- One saved card can be associated with multiple transactions.
+- Each transaction belongs to one user and one saved card.
+
+Payment processing:
+
+FastAPI validates the access token and verifies that the selected
+card belongs to the authenticated user. It creates a transaction
+with PENDING status and then records the simulated final status as
+SUCCESS or FAILED.
+
+The Django transaction API allows authenticated users to view their
+own transactions, retrieve individual transaction details, and filter
+history by status, amount, or creation date.
+
+Security:
+
+The application stores masked card numbers rather than full card
+numbers and does not store CVV values. Keep database credentials and
+secret keys in the local .env file, and never commit that file.
